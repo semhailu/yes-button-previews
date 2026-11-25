@@ -1158,7 +1158,7 @@ function scene3d(host){
  var L=function(h){return new T.Color(h).convertSRGBToLinear()};
  var rd=new T.WebGLRenderer({antialias:true,alpha:true});rd.setPixelRatio(Math.min(devicePixelRatio||1,2));rd.setSize(W,H);rd.outputEncoding=T.sRGBEncoding;rd.shadowMap.enabled=true;rd.shadowMap.type=T.PCFSoftShadowMap;
  rd.domElement.setAttribute('aria-label','3D oranges you can pick up and drop');host.insertBefore(rd.domElement,host.firstChild);
- var sc=new T.Scene(),cam=new T.PerspectiveCamera(32,W/H,.1,100);cam.position.set(0,4.2,10.5);cam.lookAt(0,1.3,0);
+ var sc=new T.Scene(),cam=new T.PerspectiveCamera(32,W/H,.1,100);cam.position.set(0,4.4,12.4);cam.lookAt(0,1.4,0);
  sc.add(new T.HemisphereLight(0xffffff,0xf1e2d4,.75));
  var key=new T.DirectionalLight(0xffffff,1.1);key.position.set(-4,10,6);key.castShadow=true;key.shadow.mapSize.set(2048,2048);var sh=key.shadow.camera;sh.left=-6;sh.right=6;sh.top=6;sh.bottom=-6;key.shadow.radius=6;key.shadow.bias=-.0004;sc.add(key);
  var warm=new T.DirectionalLight(0xffd7bb,.4);warm.position.set(6,3,-3);sc.add(warm);
@@ -1173,7 +1173,7 @@ function scene3d(host){
  var leafG=new T.SphereGeometry(1,24,12);
  var mkLeaf=function(){var l=new T.Mesh(leafG,leafM);l.scale.set(.42,.035,.17);l.castShadow=true;return l};
  /* branch */
- var curve=new T.CatmullRomCurve3([new T.Vector3(5.6,3.9,-1.4),new T.Vector3(3.3,3.45,-1.2),new T.Vector3(1.4,3.35,-1.1),new T.Vector3(-.3,3.6,-1.3)]);
+ var curve=new T.CatmullRomCurve3([new T.Vector3(4.8,4.0,-1.4),new T.Vector3(2.7,3.5,-1.2),new T.Vector3(.9,3.4,-1.1),new T.Vector3(-.7,3.65,-1.3)]);
  var branch=new T.Group();sc.add(branch);
  var bark=new T.Mesh(new T.TubeGeometry(curve,40,.09,10,false),new T.MeshStandardMaterial({color:L(0x6e5236),roughness:.85}));bark.castShadow=true;branch.add(bark);
  for(var k=0;k<9;k++){var p=curve.getPoint(.08+k*.105),l=mkLeaf();l.position.copy(p).add(new T.Vector3(0,-.12-Math.random()*.15,(Math.random()-.5)*.5));l.rotation.set(Math.random()*.8-.4,Math.random()*Math.PI,(k%2?.6:-.6)+Math.random()*.3);branch.add(l)}
@@ -1184,20 +1184,20 @@ function scene3d(host){
   if(Math.random()<.6){var lf=mkLeaf();lf.scale.multiplyScalar(.75);lf.position.set(.16,R*.94+.04,0);lf.rotation.z=.35;g.add(lf)}
   g.position.set(x,y,z);g.rotation.set(Math.random()*.3,Math.random()*6,Math.random()*.3);sc.add(g);
   var b={g:g,v:new T.Vector3(),hang:!!hang,held:false,hy:y};balls.push(b);return b};
- [[-2.2,R,.7],[-1.0,R,1.2],[.3,R,.5],[1.7,R,1.0],[-1.6,R+.86,.95]].forEach(function(p){mkOrange(p[0],p[1],p[2])});
- [[3.1,2.95,-1.15],[1.3,2.85,-1.05]].forEach(function(p){mkOrange(p[0],p[1],p[2],true)});
+ [[-1.9,R,.6],[-.8,R,1.1],[.4,R,.45],[1.6,R,.95],[-1.35,R+.86,.85]].forEach(function(p){mkOrange(p[0],p[1],p[2])});
+ [[2.1,2.98,-1.15],[.5,2.9,-1.08]].forEach(function(p){mkOrange(p[0],p[1],p[2],true)});
  /* interaction */
  var ray=new T.Raycaster(),pt=new T.Vector2(),plane=new T.Plane(new T.Vector3(0,0,1),0),hitP=new T.Vector3(),held=null,last=new T.Vector3(),lastT=0,throwV=new T.Vector3();
  var setPt=function(e){var r=rd.domElement.getBoundingClientRect();pt.x=(e.clientX-r.left)/r.width*2-1;pt.y=-(e.clientY-r.top)/r.height*2+1;ray.setFromCamera(pt,cam)};
  var pick=function(){var hits=ray.intersectObjects(balls.map(function(b){return b.g}),true);if(!hits.length)return null;var o=hits[0].object;while(o.parent&&o.parent!==sc)o=o.parent;for(var i=0;i<balls.length;i++)if(balls[i].g===o)return balls[i];return null};
  var cv=rd.domElement;
- cv.addEventListener('pointermove',function(e){setPt(e);if(held){if(ray.ray.intersectPlane(plane,hitP)){hitP.y=Math.max(R,hitP.y);hitP.x=Math.max(-4.6,Math.min(4.6,hitP.x));var now=performance.now(),dt=Math.max(16,now-lastT)/1000;throwV.copy(hitP).sub(last).divideScalar(dt).multiplyScalar(.5);last.copy(hitP);lastT=now;held.g.position.copy(hitP)}return}
+ cv.addEventListener('pointermove',function(e){setPt(e);if(held){if(ray.ray.intersectPlane(plane,hitP)){hitP.y=Math.max(R,hitP.y);hitP.x=Math.max(-BX,Math.min(BX,hitP.x));hitP.y=Math.min(4.2,hitP.y);var now=performance.now(),dt=Math.max(16,now-lastT)/1000;throwV.copy(hitP).sub(last).divideScalar(dt).multiplyScalar(.5);last.copy(hitP);lastT=now;held.g.position.copy(hitP)}return}
   cv.style.cursor=pick()?'grab':'default'});
  cv.addEventListener('pointerdown',function(e){setPt(e);var b=pick();if(!b)return;e.preventDefault();held=b;b.held=true;b.hang=false;b.v.set(0,0,0);throwV.set(0,0,0);plane.constant=-b.g.position.z;cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing';last.copy(b.g.position);lastT=performance.now();if(window.__ybxHint)window.__ybxHint()});
- var drop=function(){if(!held)return;held.held=false;held.v.copy(throwV).clampLength(0,9);held=null;cv.style.cursor='grab'};
+ var drop=function(){if(!held)return;held.held=false;held.v.copy(throwV).clampLength(0,6);held=null;cv.style.cursor='grab'};
  cv.addEventListener('pointerup',drop);cv.addEventListener('pointercancel',drop);
  /* physics */
- var G=-14,REST=.35,BX=4.6,ZMIN=-1.2,ZMAX=1.6,tmp=new T.Vector3(),n=new T.Vector3();
+ var G=-14,REST=.35,BX=2.6,ZMIN=-1.2,ZMAX=1.4,tmp=new T.Vector3(),n=new T.Vector3();
  function step(dt){
   balls.forEach(function(b){if(b.held||b.hang)return;b.v.y+=G*dt;b.g.position.addScaledVector(b.v,dt);var p=b.g.position;
    if(p.y<R){p.y=R;if(b.v.y<0)b.v.y=-b.v.y*REST;b.v.x*=.985;b.v.z*=.985;if(Math.abs(b.v.y)<.4)b.v.y=0}
@@ -1210,7 +1210,7 @@ function scene3d(host){
    var rv=tmp.copy(B.v).sub(A.v).dot(n);if(rv<0){var jI=-(1+REST)*rv/(am+bm);A.v.addScaledVector(n,-jI*am);B.v.addScaledVector(n,jI*bm)}}}}
  /* render loop */
  var vis=true;new IntersectionObserver(function(es){vis=es[0].isIntersecting;if(vis)loop()}).observe(host);
- new ResizeObserver(function(){W=host.clientWidth;H=host.clientHeight;if(!W||!H)return;rd.setSize(W,H);cam.aspect=W/H;cam.position.z=W/H<.9?13:10.5;cam.updateProjectionMatrix()}).observe(host);
+ new ResizeObserver(function(){W=host.clientWidth;H=host.clientHeight;if(!W||!H)return;rd.setSize(W,H);cam.aspect=W/H;cam.position.z=W/H<.9?15:12.4;cam.updateProjectionMatrix()}).observe(host);
  var t0=performance.now(),prev=t0,running=false;
  function frame(now){var t=(now-t0)/1000,dt=Math.min(.033,(now-prev)/1000);prev=now;
   var sub=3;for(var s2=0;s2<sub;s2++)step(dt/sub);
