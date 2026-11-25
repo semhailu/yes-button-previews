@@ -1088,7 +1088,7 @@ var BENTO='<section class="section section-cream ybx" id="ybx-demos"><div class=
  '<div class="ybx-cell ybx-c3"><span class="ybx-k">Online booking</span><h3>Book in three taps</h3><p class="sm">Pick a service, day and time. Taken slots are blocked automatically.</p><div id="ybx-bk"></div></div>'+
  '<div class="ybx-cell ybx-c3"><span class="ybx-k">AI receptionist</span><h3>Answers customers at 2am</h3><p class="sm">Tap a question to see how it replies.</p><div class="ybx-chat" id="ybx-chat" aria-live="polite"></div><div class="ybx-opts" id="ybx-qs"></div></div>'+
  '<div class="ybx-cell ybx-c4"><span class="ybx-k">Owner dashboard</span><h3>Bookings, revenue and reviews at a glance</h3><div class="ybx-opts" id="ybx-rg" role="group" aria-label="Date range"><button class="ybx-opt" data-r="7" aria-pressed="true">7 days</button><button class="ybx-opt" data-r="30">30 days</button><button class="ybx-opt" data-r="90">90 days</button></div><div class="ybx-kpis" id="ybx-kpi"></div><div class="ybx-chart"><svg id="ybx-ch" role="img" aria-label="Bookings over time"></svg></div><p class="ybx-note">Sample data.</p></div>'+
- '<div class="ybx-cell ybx-c2"><span class="ybx-k">Review kit</span><h3>Tap for a 5-star review</h3><p class="sm">Customers tap the stand with their phone. Try it.</p><div class="ybx-tap" style="grid-template-columns:minmax(0,1fr)"><div class="ybx-stand" id="ybx-stand" role="button" tabindex="0" aria-label="Tap the review stand"><span class="ybx-nfc">))</span>Tap to review us on Google</div><div class="ybx-mini" id="ybx-mini" hidden><div class="scr" id="ybx-scr"></div></div></div></div>'+
+ '<div class="ybx-cell ybx-c2"><span class="ybx-k">Review kit</span><h3>Google reviews in one tap</h3><p class="sm">Customers tap the stand with their phone. Try it.</p><div class="ybx-tap" style="grid-template-columns:minmax(0,1fr)"><div class="ybx-stand" id="ybx-stand" role="button" tabindex="0" aria-label="Tap the review stand"><span class="ybx-nfc">))</span>Tap to review us on Google</div><div class="ybx-mini" id="ybx-mini" hidden><div class="scr" id="ybx-scr"></div></div></div></div>'+
  '<div class="ybx-cell" style="grid-column:span 6"><span class="ybx-k">Responsive by default</span><h3>One site, every screen</h3><p class="sm">Drag the orange handle. The layout rearranges itself for phones, tablets and desktops.</p><div class="ybx-rz" id="ybx-rz"><div class="ybx-rzf" id="ybx-rzf"><div id="ybx-rsite"></div><button class="ybx-grip" id="ybx-grip" aria-label="Resize preview, use arrow keys"></button></div><span class="ybx-wl" id="ybx-wl"></span></div></div>'+
  '</div></div></section>';
 
@@ -1176,7 +1176,9 @@ function initHero(){
  var ok=false;try{var cv=document.createElement('canvas');ok=!!(cv.getContext('webgl')||cv.getContext('experimental-webgl'))}catch(x){}
  if(!ok){fallback();return}
  var start=function(){try{scene3d($('#ybx-hero'))}catch(x){console.error(x);fallback()}};
- if(window.THREE)start();else{var t=document.createElement('script');t.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';t.onload=start;t.onerror=fallback;document.head.appendChild(t)}
+ var sd=navigator.connection&&navigator.connection.saveData;if(sd){fallback();return}
+ var load=function(){if(window.THREE)start();else{var t=document.createElement('script');t.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';t.async=true;t.onload=start;t.onerror=fallback;document.head.appendChild(t)}};
+ if(window.requestIdleCallback)requestIdleCallback(load,{timeout:900});else setTimeout(load,200)
 }
 function scene3d(host){
  var T=window.THREE,W=host.clientWidth,H=host.clientHeight,red=matchMedia('(prefers-reduced-motion: reduce)').matches;
