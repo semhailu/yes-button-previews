@@ -1173,7 +1173,7 @@ function scene3d(host){
  var leafG=new T.SphereGeometry(1,24,12);
  var mkLeaf=function(){var l=new T.Mesh(leafG,leafM);l.scale.set(.42,.035,.17);l.castShadow=true;return l};
  /* branch */
- var curve=new T.CatmullRomCurve3([new T.Vector3(6.5,5.6,-1.5),new T.Vector3(3.6,4.9,-1.2),new T.Vector3(1.6,4.75,-1.1),new T.Vector3(-.4,5.1,-1.3)]);
+ var curve=new T.CatmullRomCurve3([new T.Vector3(5.6,3.9,-1.4),new T.Vector3(3.3,3.45,-1.2),new T.Vector3(1.4,3.35,-1.1),new T.Vector3(-.3,3.6,-1.3)]);
  var branch=new T.Group();sc.add(branch);
  var bark=new T.Mesh(new T.TubeGeometry(curve,40,.09,10,false),new T.MeshStandardMaterial({color:L(0x6e5236),roughness:.85}));bark.castShadow=true;branch.add(bark);
  for(var k=0;k<9;k++){var p=curve.getPoint(.08+k*.105),l=mkLeaf();l.position.copy(p).add(new T.Vector3(0,-.12-Math.random()*.15,(Math.random()-.5)*.5));l.rotation.set(Math.random()*.8-.4,Math.random()*Math.PI,(k%2?.6:-.6)+Math.random()*.3);branch.add(l)}
@@ -1184,8 +1184,8 @@ function scene3d(host){
   if(Math.random()<.6){var lf=mkLeaf();lf.scale.multiplyScalar(.75);lf.position.set(.16,R*.94+.04,0);lf.rotation.z=.35;g.add(lf)}
   g.position.set(x,y,z);g.rotation.set(Math.random()*.3,Math.random()*6,Math.random()*.3);sc.add(g);
   var b={g:g,v:new T.Vector3(),hang:!!hang,held:false,hy:y};balls.push(b);return b};
- [[-1.6,R,.6],[-.5,R,1.1],[.8,R,.4],[2.0,R,1.0],[-.9,R+.86,.75]].forEach(function(p){mkOrange(p[0],p[1],p[2])});
- [[3.4,4.4,-1.1],[1.4,4.25,-1.0]].forEach(function(p){mkOrange(p[0],p[1],p[2],true)});
+ [[-2.2,R,.7],[-1.0,R,1.2],[.3,R,.5],[1.7,R,1.0],[-1.6,R+.86,.95]].forEach(function(p){mkOrange(p[0],p[1],p[2])});
+ [[3.1,2.95,-1.15],[1.3,2.85,-1.05]].forEach(function(p){mkOrange(p[0],p[1],p[2],true)});
  /* interaction */
  var ray=new T.Raycaster(),pt=new T.Vector2(),plane=new T.Plane(new T.Vector3(0,0,1),0),hitP=new T.Vector3(),held=null,last=new T.Vector3(),lastT=0,throwV=new T.Vector3();
  var setPt=function(e){var r=rd.domElement.getBoundingClientRect();pt.x=(e.clientX-r.left)/r.width*2-1;pt.y=-(e.clientY-r.top)/r.height*2+1;ray.setFromCamera(pt,cam)};
