@@ -1024,7 +1024,8 @@ document.addEventListener('pointerout',function(e){var st=e.target.closest&&e.ta
 .ybx-aud input::placeholder{color:#a49fad}
 .ybx-aud button{border:0;border-radius:999px;background:var(--accent);color:#fff;font:700 15px var(--font-body);padding:0 20px;cursor:pointer;min-height:46px}
 .ybx-aud .err{font-size:13.5px;color:var(--red);margin-top:8px;min-height:1em}
-.ybx-ticks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;font:600 14px var(--font-body);color:var(--muted)}
+.ybx-alink{display:inline-block;margin-top:16px;font:600 14.5px var(--font-body);color:var(--ink-2);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:1px}.ybx-alink:hover{color:var(--accent)}
+.ybx-ticks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;font:600 14px var(--font-body);color:var(--muted)}
 .ybx-ticks span::before{content:"✓";color:var(--accent);font-weight:800;margin-right:7px}
 .ybx-scene{position:relative;align-self:stretch;min-height:320px;width:100%}
 .ybx-scene canvas{position:absolute;inset:0;width:100%!important;height:100%!important;outline:none}
@@ -1080,9 +1081,9 @@ var PROOF='<div class="ybx-proof" id="ybx-proof"><span>Recent builds</span><a hr
 var HERO='<section class="ybx ybx-hero" id="ybx-hero" aria-label="Yes Button"><div class="ybx-hg"><div>'+
  '<span class="ybx-badge">Website &amp; app studio for local businesses, worldwide</span>'+
  '<h1 class="ybx-h1">'+["Designs","that","get","your","customers","saying"].map(function(w,i){return '<span class="w" style="--i:'+i+'">'+w+'</span> '}).join('')+'<span class="w" style="--i:6"><span class="ybx-yes">yes.</span></span></h1>'+
- '<p class="ybx-sub">We design websites and apps around how your customers decide, so more people call, book or order. Your first one-page website is free.</p>'+
+ '<p class="ybx-sub">Websites and apps that get more people to call, book or order. Your first one-page website is free.</p>'+
  '<div class="ybx-cta"><a class="ybx-key" href="#contact"><em>Yes,</em>get my free website</a><a class="ybx-ghost" href="#work">See our work</a></div>'+
- '<div class="ybx-aud"><label for="ybx-au">Already have a website? Check it free in about 60 seconds.</label><form id="ybx-audf" novalidate><input id="ybx-au" inputmode="url" placeholder="yourbusiness.com" autocomplete="url"><button type="submit">Check my site</button></form><p class="err" id="ybx-aerr" aria-live="polite"></p></div>'+
+ '<a class="ybx-alink" href="#audit">Already have a website? Get a free check <span aria-hidden="true">&rarr;</span></a>'+
  '<div class="ybx-ticks"><span>Free one-page website</span><span>You own everything</span><span>No contracts</span></div>'+
  '</div><div class="ybx-scene" id="ybx-scene"><span class="ybx-cap" id="ybx-hint">Pick up an orange. Drop it anywhere.</span></div></div></section>';
 function initBuild(){var n=$('#ybx-n');n.value=S.name;
@@ -1147,7 +1148,7 @@ function initQuiz(){var qi=0,done=false;
 
 
 function initHero(){
- var f=$('#ybx-audf');f.onsubmit=function(e){e.preventDefault();var u=$('#ybx-au').value.trim();if(!u){$('#ybx-aerr').textContent='Enter your website address, or claim a free website if you don’t have one yet.';return}
+ var f=$('#ybx-audf');if(f)f.onsubmit=function(e){e.preventDefault();var u=$('#ybx-au').value.trim();if(!u){$('#ybx-aerr').textContent='Enter your website address, or claim a free website if you don’t have one yet.';return}
   try{sessionStorage.setItem('yb-audit-url',u)}catch(x){}; if(window.__ybNavigate)window.__ybNavigate('/audit');else location.hash='#audit'};
  var sc=$('#ybx-scene'),hero=$('#ybx-hero');
  hero.addEventListener('pointermove',function(e){var r=hero.getBoundingClientRect();window.__ybxM={x:(e.clientX-r.left)/r.width-.5,y:(e.clientY-r.top)/r.height-.5}});
@@ -1298,7 +1299,7 @@ function mount(){var main=$('#main');if(!main)return;var hs=$('.hero-stand',main
  if(trust&&!$('#ybx-build')){trust.after(frag(BUILD));trust.nextSibling.after(frag(BENTO));initBuild();initBento();draw(true)}
  if(how&&!$('#ybx-quiz-sec')){how.after(frag(QUIZ));initQuiz()}
  var faq=$('#faq',main);if(faq&&!$('#ybx-trust')){faq.before(frag(TRUST));}
- var cl=$('#ybx-hero .ybx-ticks');if(cl&&!$('#ybx-proof'))cl.after(frag(PROOF))}
+ var cl=$('#ybx-hero .ybx-ticks');}
 var prog=document.createElement('div');prog.id='ybx-prog';document.body.appendChild(prog);
 addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?scrollY/h*100:0)+'%'},{passive:true});
 var mt;new MutationObserver(function(){clearTimeout(mt);mt=setTimeout(mount,60)}).observe(document.body,{childList:true,subtree:true});
