@@ -1009,7 +1009,7 @@ document.addEventListener('pointerout',function(e){var st=e.target.closest&&e.ta
 .ybx-h1 .w{display:inline-block;animation:ybxW .7s var(--ease) both;animation-delay:calc(var(--i)*60ms)}
 @keyframes ybxW{from{transform:translateY(.3em)}to{transform:none}}
 .ybx-yes{display:inline-block;background:var(--accent);color:var(--ink);padding:0 .12em .02em;border-radius:.16em;transform:rotate(-2deg)}
-.ybx-sub{font-size:clamp(17px,1.4vw,19px);line-height:1.6;color:var(--body);max-width:50ch;margin-top:26px}
+.ybx-sub{font-size:clamp(17px,1.4vw,19px);line-height:1.6;color:var(--body);max-width:50ch;margin-top:32px}
 .ybx-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
 .ybx-key{display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 26px;border-radius:999px;background:var(--ink);color:#fff;font:700 16px var(--font-body);text-decoration:none;transition:transform .2s var(--ease),background .2s}
 .ybx-key:hover{transform:translateY(-2px);background:#000}
@@ -1158,15 +1158,16 @@ function scene3d(host,onPress){
  var rd=new T.WebGLRenderer({antialias:true,alpha:true});rd.setPixelRatio(Math.min(devicePixelRatio||1,2));rd.setSize(W,H);rd.outputEncoding=T.sRGBEncoding;rd.shadowMap.enabled=true;rd.shadowMap.type=T.PCFSoftShadowMap;
  rd.domElement.setAttribute('aria-label','3D Yes button. Press it to try the live website builder.');rd.domElement.setAttribute('role','button');rd.domElement.tabIndex=0;host.insertBefore(rd.domElement,host.firstChild);
  var sc=new T.Scene(),cam=new T.PerspectiveCamera(30,W/H,.1,100);cam.position.set(0,6.2,9.6);cam.lookAt(0,.35,0);
- sc.add(new T.HemisphereLight(0xffffff,0xf3e6da,.95));
+ sc.add(new T.HemisphereLight(0xffffff,0xf3e6da,.7));
  var key=new T.DirectionalLight(0xffffff,1.05);key.position.set(-3.5,9,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-5;key.shadow.camera.right=5;key.shadow.camera.top=5;key.shadow.camera.bottom=-5;key.shadow.radius=8;key.shadow.bias=-.0005;sc.add(key);
  var warm=new T.DirectionalLight(0xffd2b3,.45);warm.position.set(5,3,-2);sc.add(warm);
  var floor=new T.Mesh(new T.PlaneGeometry(30,30),new T.ShadowMaterial({opacity:.10}));floor.rotation.x=-Math.PI/2;floor.position.y=-.56;floor.receiveShadow=true;sc.add(floor);
+ var L=function(h){return new T.Color(h).convertSRGBToLinear()};
  var grp=new T.Group();sc.add(grp);
- var plinth=new T.Mesh(new T.CylinderGeometry(2.3,2.42,.55,128),new T.MeshStandardMaterial({color:0xfdfbf8,roughness:.55}));plinth.position.y=-.28;plinth.castShadow=true;plinth.receiveShadow=true;grp.add(plinth);
- var lip=new T.Mesh(new T.TorusGeometry(2.0,.025,12,160),new T.MeshStandardMaterial({color:0xe9e3dc,roughness:.6}));lip.rotation.x=Math.PI/2;lip.position.y=.005;grp.add(lip);
+ var plinth=new T.Mesh(new T.CylinderGeometry(2.3,2.42,.55,128),new T.MeshStandardMaterial({color:L(0xf6f0e9),roughness:.6}));plinth.position.y=-.28;plinth.castShadow=true;plinth.receiveShadow=true;grp.add(plinth);
+ var lip=new T.Mesh(new T.TorusGeometry(2.0,.025,12,160),new T.MeshStandardMaterial({color:L(0xe3d9ce),roughness:.6}));lip.rotation.x=Math.PI/2;lip.position.y=.005;grp.add(lip);
  var btn=new T.Group();grp.add(btn);
- var bodyM=new T.MeshPhysicalMaterial({color:0xff6b1a,roughness:.32,metalness:0,clearcoat:.8,clearcoatRoughness:.25,side:T.DoubleSide});
+ var bodyM=new T.MeshPhysicalMaterial({color:L(0xff6b1a),roughness:.32,metalness:0,clearcoat:.8,clearcoatRoughness:.25,side:T.DoubleSide});
  var prof=[[1.7,0],[1.7,.46],[1.66,.6],[1.56,.73],[1.38,.83],[1.1,.89],[.65,.92],[0,.93]].map(function(p){return new T.Vector2(p[0],p[1])});
  var body=new T.Mesh(new T.LatheGeometry(prof,128),bodyM);body.castShadow=true;btn.add(body);
  var c=document.createElement('canvas');c.width=c.height=512;var x=c.getContext('2d');
@@ -1175,8 +1176,8 @@ function scene3d(host,onPress){
  var label=new T.Mesh(new T.CircleGeometry(1.0,64),new T.MeshBasicMaterial({map:tx,transparent:true}));label.rotation.x=-Math.PI/2;label.position.y=.936;btn.add(label);
  if(document.fonts&&document.fonts.load)document.fonts.load('800 168px "Bricolage Grotesque"').then(function(){paint();tx.needsUpdate=true}).catch(function(){});
  /* three quiet shapes */
- var soft=[[0xffe3d1,new T.SphereGeometry(.34,48,24),[-2.9,1.9,-1.4]],[0xffffff,new T.TorusGeometry(.3,.11,20,64),[2.9,2.5,-1.8]],[0xffb48a,new T.SphereGeometry(.2,48,24),[2.3,.6,1.6]]];
- var shapes=soft.map(function(d,i){var m=new T.Mesh(d[1],new T.MeshStandardMaterial({color:d[0],roughness:.45}));m.position.set(d[2][0],d[2][1],d[2][2]);m.castShadow=true;m.userData={y:d[2][1],o:i*2.1};sc.add(m);return m});
+ var soft=[[0xffe3d1,new T.SphereGeometry(.34,48,24),[-2.6,1.8,-1.4]],[0xffffff,new T.TorusGeometry(.3,.11,20,64),[2.4,2.3,-1.6]],[0xffb48a,new T.SphereGeometry(.2,48,24),[2.3,.6,1.6]]];
+ var shapes=soft.map(function(d,i){var m=new T.Mesh(d[1],new T.MeshStandardMaterial({color:L(d[0]),roughness:.45}));m.position.set(d[2][0],d[2][1],d[2][2]);m.castShadow=true;m.userData={y:d[2][1],o:i*2.1};sc.add(m);return m});
  var ray=new T.Raycaster(),pt=new T.Vector2(),press=0,pressing=false,hover=false;
  var hit=function(e){var r=rd.domElement.getBoundingClientRect();pt.x=(e.clientX-r.left)/r.width*2-1;pt.y=-(e.clientY-r.top)/r.height*2+1;ray.setFromCamera(pt,cam);return ray.intersectObjects([body,label,plinth]).length>0};
  var doPress=function(){pressing=true;setTimeout(function(){pressing=false},170);setTimeout(onPress,420)};
