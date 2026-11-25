@@ -1317,7 +1317,7 @@ function scene3d(host){
 }
 function frag(h){var t=document.createElement('template');t.innerHTML=h;return t.content.firstChild}
 function mount(){var main=$('#main');if(!main)return;var hs=$('.hero-stand',main);if(hs&&!$('#ybx-hero')){hs.before(frag(HERO));document.body.classList.add('ybx-hero-on');initHero()}if(!hs){$$('#main > .ybx').forEach(function(e){e.remove()});document.body.classList.remove('ybx-hero-on');return}var trust=$('.trust-section',main),how=$('#how',main);if(trust&&!$('#ybx-inc'))trust.before(frag(INC));
- if(trust&&!$('#ybx-build')){trust.after(frag(BUILD));trust.nextSibling.after(frag(BENTO));initBuild();initBento();draw(true)}
+ if(trust&&!$('#ybx-build')){trust.after(frag(BUILD));initBuild();draw(true)}
  if(how&&!$('#ybx-quiz-sec')){how.after(frag(QUIZ));initQuiz()}
  var faq=$('#faq',main);if(faq&&!$('#ybx-trust')){faq.before(frag(TRUST));}
  var cl=$('#ybx-hero .ybx-ticks');}
