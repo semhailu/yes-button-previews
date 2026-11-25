@@ -1165,7 +1165,7 @@ function scene3d(host){
  var rd=new T.WebGLRenderer({antialias:true,alpha:true});rd.setPixelRatio(Math.min(devicePixelRatio||1,2));rd.setSize(W,H);rd.outputEncoding=T.sRGBEncoding;rd.toneMapping=T.ACESFilmicToneMapping;rd.toneMappingExposure=1.05;rd.shadowMap.enabled=true;rd.shadowMap.type=T.PCFSoftShadowMap;
  var cvs=rd.domElement;cvs.className='ybx-cv';cvs.setAttribute('aria-hidden','true');host.appendChild(cvs);
  var sc=new T.Scene(),cam=new T.PerspectiveCamera(28,W/H,.1,200);var DIST=16,HB=0,VB=0;
- var frame3=function(){var halfH=Math.tan(T.MathUtils.degToRad(14))*DIST;VB=halfH*2;HB=halfH*W/H;cam.aspect=W/H;cam.position.set(0,halfH+1.0,DIST);cam.lookAt(0,halfH-.42,0);cam.updateProjectionMatrix()};frame3();
+ var frame3=function(){var tn=Math.tan(T.MathUtils.degToRad(14));DIST=Math.max(16,3.0/(tn*W/H));var halfH=tn*DIST;VB=halfH*2;HB=halfH*W/H;cam.aspect=W/H;cam.position.set(0,halfH+1.0,DIST);cam.lookAt(0,halfH-.42,0);cam.updateProjectionMatrix()};frame3();
  /* soft studio environment for realistic reflections */
  var pm=new T.PMREMGenerator(rd),es=new T.Scene();es.background=L(0xf4ece4);
  var box=function(c,x,y,z,sx,sy,sz){var m=new T.Mesh(new T.BoxGeometry(sx,sy,sz),new T.MeshBasicMaterial({color:c}));m.position.set(x,y,z);es.add(m)};
@@ -1208,7 +1208,7 @@ function scene3d(host){
  /* branch */
  var curve=new T.CatmullRomCurve3([new T.Vector3(3.2,.55,-.4),new T.Vector3(1.1,.05,-.2),new T.Vector3(-.7,-.05,-.1),new T.Vector3(-2.3,.2,-.3)]);
  var branch=new T.Group();sc.add(branch);
- var placeBranch=function(){var mob=W<700;branch.position.set(mob?HB-1.6:HB-2.6,VB-(mob?1.0:1.5),-.6);branch.scale.setScalar(mob?.7:1)};placeBranch();
+ var placeBranch=function(){var mob=W<700;branch.position.set(mob?HB-1.4:HB-2.6,VB-(mob?1.1:1.5),-.6);branch.scale.setScalar(mob?.8:1)};placeBranch();
  var bark=new T.Mesh(new T.TubeGeometry(curve,60,.085,12,false),new T.MeshStandardMaterial({color:L(0x6b4f35),roughness:.9}));bark.castShadow=true;branch.add(bark);
  for(var k=0;k<12;k++){var p=curve.getPoint(.04+k*.08),lf=mkLeaf(.7+Math.random()*.35);lf.position.copy(p);lf.rotation.order='YZX';lf.rotation.y=(k%2?1:-1)*(Math.PI/2-.5+Math.random()*.9)+(Math.random()-.5)*.4;lf.rotation.z=-(.35+Math.random()*.5);lf.rotation.x=(Math.random()-.5)*1.2;branch.add(lf)}
  /* oranges */
