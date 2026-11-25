@@ -1194,15 +1194,25 @@ function scene3d(host){
   g.computeVertexNormals();return g};
  var geos=[mkGeo(1),mkGeo(2),mkGeo(3)];
  /* leaf: shaped, curved, veined */
- var lc=document.createElement('canvas');lc.width=256;lc.height=128;var l2=lc.getContext('2d');var lg=l2.createLinearGradient(0,0,0,128);lg.addColorStop(0,'#1f5a2a');lg.addColorStop(.5,'#2e7a3a');lg.addColorStop(1,'#1b5025');l2.fillStyle=lg;l2.fillRect(0,0,256,128);
- l2.strokeStyle='rgba(170,215,150,.45)';l2.lineWidth=2.5;l2.beginPath();l2.moveTo(0,64);l2.lineTo(256,64);l2.stroke();l2.lineWidth=1.2;l2.strokeStyle='rgba(170,215,150,.22)';
- for(i=1;i<9;i++){var xx=i*28;l2.beginPath();l2.moveTo(xx,64);l2.quadraticCurveTo(xx+18,40,xx+30,8);l2.stroke();l2.beginPath();l2.moveTo(xx,64);l2.quadraticCurveTo(xx+18,88,xx+30,120);l2.stroke()}
- var leafT=new T.CanvasTexture(lc);leafT.encoding=T.sRGBEncoding;
- var shp=new T.Shape();shp.moveTo(0,0);shp.bezierCurveTo(.25,.2,.7,.2,1,0);shp.bezierCurveTo(.7,-.2,.25,-.2,0,0);
- var leafG=new T.ShapeGeometry(shp,24),lp=leafG.attributes.position,uv=leafG.attributes.uv;
- for(i=0;i<lp.count;i++){var lx=lp.getX(i),ly=lp.getY(i);uv.setXY(i,lx,(ly+.2)/.4);lp.setZ(i,-.18*lx*lx+.12*Math.abs(ly)*-1)}leafG.computeVertexNormals();
- var leafM=new T.MeshPhysicalMaterial({map:leafT,roughness:.5,clearcoat:.25,clearcoatRoughness:.4,side:T.DoubleSide,envMapIntensity:.6});
- var mkLeaf=function(len){var l=new T.Mesh(leafG,leafM);l.scale.setScalar(len||.9);l.castShadow=true;return l};
+ var stemM0=new T.MeshStandardMaterial({color:L(0x5c6b2e),roughness:.7});
+ var mkLT=function(base,mid,edge,seed){var c=document.createElement('canvas');c.width=512;c.height=256;var x=c.getContext('2d'),rnd=function(){seed=(seed*9301+49297)%233280;return seed/233280};
+  var g=x.createLinearGradient(0,0,0,256);g.addColorStop(0,edge);g.addColorStop(.38,base);g.addColorStop(.5,mid);g.addColorStop(.62,base);g.addColorStop(1,edge);x.fillStyle=g;x.fillRect(0,0,512,256);
+  var g2=x.createLinearGradient(0,0,512,0);g2.addColorStop(0,'rgba(120,150,40,.25)');g2.addColorStop(.3,'rgba(0,0,0,0)');g2.addColorStop(1,'rgba(10,30,10,.25)');x.fillStyle=g2;x.fillRect(0,0,512,256);
+  for(var i=0;i<1800;i++){x.fillStyle=rnd()<.5?'rgba(255,255,220,'+rnd()*.05+')':'rgba(0,20,0,'+rnd()*.07+')';x.fillRect(rnd()*512,rnd()*256,1+rnd()*2,1+rnd()*2)}
+  x.lineCap='round';for(var k=0;k<11;k++){var sx=22+k*42+rnd()*8;[1,-1].forEach(function(d){x.strokeStyle='rgba(205,225,150,'+(.16+rnd()*.08)+')';x.lineWidth=1.6;x.beginPath();x.moveTo(sx,128);x.bezierCurveTo(sx+16,128-d*30,sx+34,128-d*70,sx+58,128-d*112);x.stroke();
+   x.strokeStyle='rgba(0,25,0,.18)';x.lineWidth=1;x.beginPath();x.moveTo(sx+3,129+d*2);x.bezierCurveTo(sx+19,129-d*28,sx+37,129-d*68,sx+61,129-d*110);x.stroke()})}
+  x.strokeStyle='rgba(215,230,150,.75)';x.lineWidth=5;x.beginPath();x.moveTo(0,128);x.lineTo(512,128);x.stroke();x.strokeStyle='rgba(240,250,190,.5)';x.lineWidth=1.5;x.beginPath();x.moveTo(0,127);x.lineTo(512,127);x.stroke();
+  var t=new T.CanvasTexture(c);t.encoding=T.sRGBEncoding;t.anisotropy=4;return t};
+ var veinC=document.createElement('canvas');veinC.width=256;veinC.height=128;(function(){var x=veinC.getContext('2d');x.fillStyle='#808080';x.fillRect(0,0,256,128);x.strokeStyle='#5a5a5a';x.lineWidth=3;x.beginPath();x.moveTo(0,64);x.lineTo(256,64);x.stroke();x.lineWidth=1.3;for(var k=0;k<11;k++){var sx=11+k*21;[1,-1].forEach(function(d){x.beginPath();x.moveTo(sx,64);x.bezierCurveTo(sx+8,64-d*15,sx+17,64-d*35,sx+29,64-d*56);x.stroke()})}})();
+ var veinT=new T.CanvasTexture(veinC);
+ /* citrus leaf: ovate with a pointed tip, short winged stalk, folded along the midrib and arched */
+ var shp=new T.Shape();shp.moveTo(0,0);shp.lineTo(.08,.012);shp.bezierCurveTo(.2,.15,.55,.2,.78,.1);shp.bezierCurveTo(.9,.05,.96,.015,1,0);shp.bezierCurveTo(.96,-.015,.9,-.05,.78,-.1);shp.bezierCurveTo(.55,-.2,.2,-.15,.08,-.012);shp.lineTo(0,0);
+ var leafG=new T.ShapeGeometry(shp,40),lp=leafG.attributes.position,uv=leafG.attributes.uv;
+ for(i=0;i<lp.count;i++){var lx=lp.getX(i),ly=lp.getY(i);uv.setXY(i,lx,(ly+.2)/.4);var wv=.008*Math.sin(lx*22+ly*9);lp.setZ(i,-.22*lx*lx+.35*Math.abs(ly)+wv*Math.abs(ly)*6)}leafG.computeVertexNormals();
+ var leafMs=[['#2a6b2c','#3a8237','#1a4a1f',7],['#225f27','#33763a','#163f1b',19],['#357a30','#4a913c','#205222',31],['#1f5523','#2f6d33','#123717',43]].map(function(c){return new T.MeshPhysicalMaterial({map:mkLT(c[0],c[1],c[2],c[3]),bumpMap:veinT,bumpScale:.012,roughness:.38,clearcoat:.55,clearcoatRoughness:.25,side:T.DoubleSide,envMapIntensity:.75})});
+ var leafM=leafMs[0];
+ var petG=new T.CylinderGeometry(.008,.011,.08,5);petG.rotateZ(Math.PI/2);petG.translate(-.04,0,0);
+ var mkLeaf=function(len){var l=new T.Mesh(leafG,leafMs[(Math.random()*leafMs.length)|0]);l.scale.set(len||.9,(len||.9)*(.85+Math.random()*.3),len||.9);l.castShadow=true;var pt=new T.Mesh(petG,stemM0);l.add(pt);return l};
  var stemM=new T.MeshStandardMaterial({color:L(0x5c6b2e),roughness:.7});
  var calyxM=new T.MeshStandardMaterial({color:L(0x6f8a34),roughness:.6});
  /* branch: tapered, barked, with twigs and leaf clusters; enters from off-screen top right */
@@ -1266,7 +1276,7 @@ function scene3d(host){
    if(p.z<ZMIN){p.z=ZMIN;b.v.z=Math.abs(b.v.z)*REST}if(p.z>ZMAX){p.z=ZMAX;b.v.z=-Math.abs(b.v.z)*REST}
    var sp=Math.hypot(b.v.x,b.v.z);if(p.y<=R+.001&&sp>.01){b.g.rotation.z-=b.v.x*dt/R;b.g.rotation.x+=b.v.z*dt/R}});
   for(var i=0;i<balls.length;i++)for(var j=i+1;j<balls.length;j++){var A=balls[i],B=balls[j];n.copy(B.g.position).sub(A.g.position);var d=n.length();if(d>0&&d<2*R){n.divideScalar(d);var ov=2*R-d,am=A.held||A.hang?0:1,bm=B.held||B.hang?0:1;if(am+bm===0)continue;
-   if(B.hang&&!B.held){B.hang=false;bm=1;if(B.stalk)B.stalk.visible=false}if(A.hang&&!A.held){A.hang=false;am=1;if(A.stalk)A.stalk.visible=false}
+   var hit=tmp.copy(B.v).sub(A.v).length();if(A.hang||B.hang){if(hit<9){var M=A.hang?B:A,sgn=A.hang?1:-1;M.g.position.addScaledVector(n,sgn*ov);var rv0=M.v.dot(n)*sgn;if(rv0<0)M.v.addScaledVector(n,-sgn*(1+REST)*rv0);continue}if(B.hang){B.hang=false;bm=1;if(B.stalk)B.stalk.visible=false}if(A.hang){A.hang=false;am=1;if(A.stalk)A.stalk.visible=false}}
    A.g.position.addScaledVector(n,-ov*am/(am+bm));B.g.position.addScaledVector(n,ov*bm/(am+bm));
    var rv=tmp.copy(B.v).sub(A.v).dot(n);if(rv<0){var jI=-(1+REST)*rv/(am+bm);A.v.addScaledVector(n,-jI*am);B.v.addScaledVector(n,jI*bm)}}}}
  /* render loop */
