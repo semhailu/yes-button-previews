@@ -1165,7 +1165,7 @@ function scene3d(host){
  var rd=new T.WebGLRenderer({antialias:true,alpha:true});rd.setPixelRatio(Math.min(devicePixelRatio||1,2));rd.setSize(W,H);rd.outputEncoding=T.sRGBEncoding;rd.toneMapping=T.ACESFilmicToneMapping;rd.toneMappingExposure=1.05;rd.shadowMap.enabled=true;rd.shadowMap.type=T.PCFSoftShadowMap;
  var cvs=rd.domElement;cvs.className='ybx-cv';cvs.setAttribute('aria-hidden','true');host.appendChild(cvs);
  var sc=new T.Scene(),cam=new T.PerspectiveCamera(28,W/H,.1,200);var DIST=16,HB=0,VB=0;
- var frame3=function(){var halfH=Math.tan(T.MathUtils.degToRad(14))*DIST;VB=halfH*2;HB=halfH*W/H;cam.aspect=W/H;cam.position.set(0,halfH*.92+1.2,DIST);cam.lookAt(0,halfH*.92-.15,0);cam.updateProjectionMatrix()};frame3();
+ var frame3=function(){var halfH=Math.tan(T.MathUtils.degToRad(14))*DIST;VB=halfH*2;HB=halfH*W/H;cam.aspect=W/H;cam.position.set(0,halfH+1.0,DIST);cam.lookAt(0,halfH-.42,0);cam.updateProjectionMatrix()};frame3();
  /* soft studio environment for realistic reflections */
  var pm=new T.PMREMGenerator(rd),es=new T.Scene();es.background=L(0xf4ece4);
  var box=function(c,x,y,z,sx,sy,sz){var m=new T.Mesh(new T.BoxGeometry(sx,sy,sz),new T.MeshBasicMaterial({color:c}));m.position.set(x,y,z);es.add(m)};
@@ -1177,7 +1177,7 @@ function scene3d(host){
  /* procedural peel: colour, pores, bump */
  var cw=1024,ch=512,rnd=function(a,b){return a+Math.random()*(b-a)};
  var cc=document.createElement('canvas');cc.width=cw;cc.height=ch;var c=cc.getContext('2d');
- var gr=c.createLinearGradient(0,0,0,ch);gr.addColorStop(0,'#f08a1c');gr.addColorStop(.18,'#ff8a14');gr.addColorStop(.6,'#ff7d10');gr.addColorStop(1,'#e8700e');c.fillStyle=gr;c.fillRect(0,0,cw,ch);
+ var gr=c.createLinearGradient(0,0,0,ch);gr.addColorStop(0,'#e47a10');gr.addColorStop(.18,'#f57a0c');gr.addColorStop(.6,'#f06e08');gr.addColorStop(1,'#d9620a');c.fillStyle=gr;c.fillRect(0,0,cw,ch);
  for(var i=0;i<260;i++){var x=rnd(0,cw),y=rnd(0,ch),r=rnd(20,80),g=c.createRadialGradient(x,y,0,x,y,r),lt=Math.random()<.5;g.addColorStop(0,lt?'rgba(255,170,60,.18)':'rgba(200,80,0,.14)');g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(x-r,y-r,2*r,2*r)}
  var ctop=c.createRadialGradient(cw/2,0,0,cw/2,0,ch*.25);ctop.addColorStop(0,'rgba(150,140,40,.35)');ctop.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=ctop;c.fillRect(0,0,cw,ch*.25);
  for(i=0;i<9000;i++){c.fillStyle='rgba(170,70,0,'+rnd(.08,.22)+')';c.beginPath();c.arc(rnd(0,cw),rnd(0,ch),rnd(.6,1.6),0,7);c.fill()}
@@ -1185,7 +1185,7 @@ function scene3d(host){
  var bc=document.createElement('canvas');bc.width=cw;bc.height=ch;var b2=bc.getContext('2d');b2.fillStyle='#bdbdbd';b2.fillRect(0,0,cw,ch);
  for(i=0;i<16000;i++){var v=rnd(70,140)|0;b2.fillStyle='rgb('+v+','+v+','+v+')';b2.beginPath();b2.arc(rnd(0,cw),rnd(0,ch),rnd(.7,2.1),0,7);b2.fill()}
  var bumpT=new T.CanvasTexture(bc);bumpT.anisotropy=8;
- var peel=new T.MeshPhysicalMaterial({map:mapT,bumpMap:bumpT,bumpScale:.012,roughness:.42,clearcoat:.35,clearcoatRoughness:.45});
+ var peel=new T.MeshPhysicalMaterial({map:mapT,bumpMap:bumpT,bumpScale:.014,roughness:.5,clearcoat:.3,clearcoatRoughness:.5,envMapIntensity:.8});
  /* slightly irregular orange shape with stem dimple */
  var R=.48;
  var mkGeo=function(seed){var g=new T.SphereGeometry(R,96,64),p=g.attributes.position,v=new T.Vector3(),k1=seed*1.7,k2=seed*2.9;
@@ -1194,14 +1194,14 @@ function scene3d(host){
   g.computeVertexNormals();return g};
  var geos=[mkGeo(1),mkGeo(2),mkGeo(3)];
  /* leaf: shaped, curved, veined */
- var lc=document.createElement('canvas');lc.width=256;lc.height=128;var l2=lc.getContext('2d');var lg=l2.createLinearGradient(0,0,0,128);lg.addColorStop(0,'#2f7a3c');lg.addColorStop(.5,'#3f9a4c');lg.addColorStop(1,'#2a6e36');l2.fillStyle=lg;l2.fillRect(0,0,256,128);
- l2.strokeStyle='rgba(200,240,190,.55)';l2.lineWidth=2.5;l2.beginPath();l2.moveTo(0,64);l2.lineTo(256,64);l2.stroke();l2.lineWidth=1.2;l2.strokeStyle='rgba(200,240,190,.3)';
+ var lc=document.createElement('canvas');lc.width=256;lc.height=128;var l2=lc.getContext('2d');var lg=l2.createLinearGradient(0,0,0,128);lg.addColorStop(0,'#1f5a2a');lg.addColorStop(.5,'#2e7a3a');lg.addColorStop(1,'#1b5025');l2.fillStyle=lg;l2.fillRect(0,0,256,128);
+ l2.strokeStyle='rgba(170,215,150,.45)';l2.lineWidth=2.5;l2.beginPath();l2.moveTo(0,64);l2.lineTo(256,64);l2.stroke();l2.lineWidth=1.2;l2.strokeStyle='rgba(170,215,150,.22)';
  for(i=1;i<9;i++){var xx=i*28;l2.beginPath();l2.moveTo(xx,64);l2.quadraticCurveTo(xx+18,40,xx+30,8);l2.stroke();l2.beginPath();l2.moveTo(xx,64);l2.quadraticCurveTo(xx+18,88,xx+30,120);l2.stroke()}
  var leafT=new T.CanvasTexture(lc);leafT.encoding=T.sRGBEncoding;
  var shp=new T.Shape();shp.moveTo(0,0);shp.bezierCurveTo(.25,.2,.7,.2,1,0);shp.bezierCurveTo(.7,-.2,.25,-.2,0,0);
  var leafG=new T.ShapeGeometry(shp,24),lp=leafG.attributes.position,uv=leafG.attributes.uv;
  for(i=0;i<lp.count;i++){var lx=lp.getX(i),ly=lp.getY(i);uv.setXY(i,lx,(ly+.2)/.4);lp.setZ(i,-.18*lx*lx+.12*Math.abs(ly)*-1)}leafG.computeVertexNormals();
- var leafM=new T.MeshPhysicalMaterial({map:leafT,roughness:.4,clearcoat:.5,clearcoatRoughness:.3,side:T.DoubleSide});
+ var leafM=new T.MeshPhysicalMaterial({map:leafT,roughness:.5,clearcoat:.25,clearcoatRoughness:.4,side:T.DoubleSide,envMapIntensity:.6});
  var mkLeaf=function(len){var l=new T.Mesh(leafG,leafM);l.scale.setScalar(len||.9);l.castShadow=true;return l};
  var stemM=new T.MeshStandardMaterial({color:L(0x5c6b2e),roughness:.7});
  var calyxM=new T.MeshStandardMaterial({color:L(0x6f8a34),roughness:.6});
@@ -1210,7 +1210,7 @@ function scene3d(host){
  var branch=new T.Group();sc.add(branch);
  var placeBranch=function(){var mob=W<700;branch.position.set(mob?HB-1.6:HB-2.6,VB-(mob?1.0:1.5),-.6);branch.scale.setScalar(mob?.7:1)};placeBranch();
  var bark=new T.Mesh(new T.TubeGeometry(curve,60,.085,12,false),new T.MeshStandardMaterial({color:L(0x6b4f35),roughness:.9}));bark.castShadow=true;branch.add(bark);
- for(var k=0;k<11;k++){var p=curve.getPoint(.05+k*.085),lf=mkLeaf(.75+Math.random()*.35);lf.position.copy(p);lf.rotation.set(-.6-Math.random()*.6,(k%2?1:-1)*(.6+Math.random()*.8)+Math.PI*(k%2),Math.random()*.4-.2);branch.add(lf)}
+ for(var k=0;k<12;k++){var p=curve.getPoint(.04+k*.08),lf=mkLeaf(.7+Math.random()*.35);lf.position.copy(p);lf.rotation.order='YZX';lf.rotation.y=(k%2?1:-1)*(Math.PI/2-.5+Math.random()*.9)+(Math.random()-.5)*.4;lf.rotation.z=-(.35+Math.random()*.5);lf.rotation.x=(Math.random()-.5)*1.2;branch.add(lf)}
  /* oranges */
  var balls=[],blobT=(function(){var b=document.createElement('canvas');b.width=b.height=128;var x=b.getContext('2d'),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(60,30,10,.45)');g.addColorStop(.5,'rgba(60,30,10,.15)');g.addColorStop(1,'rgba(60,30,10,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new T.CanvasTexture(b)})();
  var blobG=new T.PlaneGeometry(1,1);
