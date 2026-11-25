@@ -1137,7 +1137,7 @@ function initBento(){
  /* dashboard */
  var seed,rnd=function(){seed=seed*16807%2147483647;return seed/2147483647},DATA={};[7,30,90].forEach(function(r){seed=r*31;DATA[r]=[];for(var i=0;i<r;i++)DATA[r].push(Math.round(8+i*(14/r)*3+rnd()*9))});
  var R=7,ch=$('#ybx-ch');
- var drawC=function(){var d=DATA[R],W=ch.clientWidth||400,H=ch.clientHeight||160,mx=Math.max.apply(null,d)*1.15,p=6,x=function(i){return p+i*(W-2*p)/(d.length-1)},y=function(v){return H-20-(v/mx)*(H-30)};
+ var drawC=function(){if(!ch.isConnected)return;var d=DATA[R],W=ch.clientWidth||400,H=ch.clientHeight||160,mx=Math.max.apply(null,d)*1.15,p=6,x=function(i){return p+i*(W-2*p)/(d.length-1)},y=function(v){return H-20-(v/mx)*(H-30)};
   var line=d.map(function(v,i){return (i?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1)}).join('');
   ch.innerHTML='<defs><linearGradient id="ybxg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff6b1a" stop-opacity=".32"/><stop offset="1" stop-color="#ff6b1a" stop-opacity="0"/></linearGradient></defs><path d="'+line+'L'+x(d.length-1)+','+(H-20)+'L'+x(0)+','+(H-20)+'Z" fill="url(#ybxg)"/><path d="'+line+'" fill="none" stroke="#ff6b1a" stroke-width="2.5" stroke-linejoin="round"/><circle cx="'+x(d.length-1)+'" cy="'+y(d[d.length-1])+'" r="5" fill="#ff6b1a"/><line x1="0" x2="'+W+'" y1="'+(H-20)+'" y2="'+(H-20)+'" stroke="#e9e3dc"/><text x="'+p+'" y="'+(H-4)+'" font-size="12" fill="#6b6577">'+R+' days ago</text><text x="'+(W-p)+'" y="'+(H-4)+'" font-size="12" fill="#6b6577" text-anchor="end">Today</text>';
   var tot=d.reduce(function(a,b){return a+b},0);$('#ybx-kpi').innerHTML='<div class="ybx-kpi"><span class="sm">Bookings</span><b>'+tot.toLocaleString('en-GB')+'</b><small>+'+(12+R%7)+'%</small></div><div class="ybx-kpi"><span class="sm">Revenue</span><b>£'+(tot*21).toLocaleString('en-GB')+'</b><small>+'+(9+R%5)+'%</small></div><div class="ybx-kpi"><span class="sm">New reviews</span><b>'+Math.round(tot/9)+'</b><small>4.9 avg</small></div>'};
@@ -1151,7 +1151,7 @@ function initBento(){
   if(e.target.closest('[data-again]')){mini.hidden=true;stand.style.display=''}};
  /* resizer */
  var rz=$('#ybx-rz'),rzf=$('#ybx-rzf'),grip=$('#ybx-grip');
- var setW=function(px){var max=rz.clientWidth-24,w=Math.max(150,Math.min(max,px));rzf.style.width=w+'px';var real=Math.round(w/.62);$('#ybx-wl').textContent=(real<600?'Phone':real<900?'Tablet':'Desktop')+' · '+real+'px';$('#ybx-rsite').classList.toggle('ybx-narrow',real<600)};
+ var setW=function(px){if(!rz.isConnected)return;var max=rz.clientWidth-24,w=Math.max(150,Math.min(max,px));rzf.style.width=w+'px';var real=Math.round(w/.62);$('#ybx-wl').textContent=(real<600?'Phone':real<900?'Tablet':'Desktop')+' · '+real+'px';$('#ybx-rsite').classList.toggle('ybx-narrow',real<600)};
  var drag=false;grip.onpointerdown=function(e){drag=true;grip.setPointerCapture(e.pointerId)};grip.onpointermove=function(e){if(drag)setW(e.clientX-rzf.getBoundingClientRect().left)};grip.onpointerup=function(){drag=false};
  grip.onkeydown=function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();setW(rzf.clientWidth+(e.key==='ArrowRight'?24:-24))}};
  new ResizeObserver(function(){setW(rzf.clientWidth)}).observe(rz);setW(rz.clientWidth*.7);
@@ -1300,8 +1300,8 @@ function scene3d(host){
    A.g.position.addScaledVector(n,-ov*am/(am+bm));B.g.position.addScaledVector(n,ov*bm/(am+bm));
    var rv=tmp.copy(B.v).sub(A.v).dot(n);if(rv<0){var jI=-(1+REST)*rv/(am+bm);A.v.addScaledVector(n,-jI*am);B.v.addScaledVector(n,jI*bm)}}}}
  /* render loop */
- var vis=true;new IntersectionObserver(function(es){vis=es[0].isIntersecting;if(vis)loop()}).observe(host);
- new ResizeObserver(function(){W=host.clientWidth;H=host.clientHeight;if(!W||!H)return;rd.setSize(W,H);frame3();BX=HB-R;placeBranch();placeHangs()}).observe(host);
+ var vis=true,dead=false;var kill=function(){if(dead)return;dead=true;vis=false;try{rd.dispose();rd.forceContextLoss()}catch(x){}};new IntersectionObserver(function(es){if(!host.isConnected){kill();return}vis=es[0].isIntersecting;if(vis)loop()}).observe(host);
+ new ResizeObserver(function(){if(!host.isConnected){kill();return}W=host.clientWidth;H=host.clientHeight;if(!W||!H)return;rd.setSize(W,H);frame3();BX=HB-R;placeBranch();placeHangs()}).observe(host);
  var t0=performance.now(),prev=t0,running=false;
  function frame(now){var t=(now-t0)/1000,dt=Math.min(.033,(now-prev)/1000);prev=now;
   var sub=3;for(var s2=0;s2<sub;s2++)step(dt/sub);
